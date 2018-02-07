@@ -1,16 +1,20 @@
 # file: postgresql/tasks/install_yum.yml
 
+#TODO: this whole thing should get replaced with the package directives
+
 # The standard ca-certs are needed because  without them apt_key will fail to
 # validate www.postgresql.org (or probably any other source).
 - name: PostgreSQL | Make sure the CA certificates are available
   yum:
     name: ca-certificates
     state: present
+  become: yes
 
 - name: PostgreSQL | Add PostgreSQL repository
   yum:
     name: "{{ postgresql_yum_repository_url }}"
     state: present
+  become: yes
 
 - name: PostgreSQL | Make sure the dependencies are installed
   yum:
@@ -18,6 +22,7 @@
     state: present
     update_cache: yes
   with_items: ["python-psycopg2", "python-pycurl", "glibc-common"]
+  become: yes
 
 - name: PostgreSQL | Install PostgreSQL
   yum:
@@ -28,6 +33,7 @@
     - "postgresql{{ postgresql_version_terse }}-server"
     - "postgresql{{ postgresql_version_terse }}"
     - "postgresql{{ postgresql_version_terse }}-contrib"
+  become: yes
 
 - name: PostgreSQL | PGTune
   yum:
@@ -35,3 +41,4 @@
     state: present
   environment: "{{ postgresql_env }}"
   when: postgresql_pgtune
+  become: yes
