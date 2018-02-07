@@ -78,6 +78,8 @@
     state: directory
 
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
+  become: true
+  become_user: "{{ postgresql_service_user }}"
   template:
     src: pg_hba.conf.j2
     dest: "{{postgresql_conf_directory}}/pg_hba.conf"
@@ -87,6 +89,8 @@
   register: postgresql_configuration_pt1
 
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
+  become: true
+  become_user: "{{ postgresql_service_user }}"
   template:
     src: "postgresql.conf-{{ postgresql_version }}.j2"
     # if using pgtune, save the template to ".untuned"
@@ -127,6 +131,8 @@
   changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
 - name: PostgreSQL | Create folder for additional configuration files
+  become: true
+  become_user: "{{ postgresql_service_user }}"
   file:
     name: "{{postgresql_conf_directory}}/conf.d"
     state: directory
