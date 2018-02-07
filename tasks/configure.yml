@@ -8,6 +8,7 @@
   when: ansible_os_family == "RedHat" and postgresql_cluster_reset
 
 - name: PostgreSQL | Make sure the postgres data directory exists
+  become: yes
   file:
     path: "{{postgresql_data_directory}}"
     owner: "{{ postgresql_service_user }}"
