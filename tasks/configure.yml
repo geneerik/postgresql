@@ -141,6 +141,7 @@
     mode: 0755
 
 - name: PostgreSQL | Ensure the systemd directory for PostgreSQL exists | RedHat
+  become: true
   file:
     name: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d"
     state: directory
@@ -148,6 +149,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
+  become: true
   template:
     src: etc_systemd_system_postgresql.service.d_custom.conf.j2
     dest: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d/custom.conf"
@@ -155,6 +157,7 @@
   register: postgresql_systemd_custom_conf
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
+  become: true
   file:
     name: "{{ postgresql_pid_directory }}"
     state: directory
@@ -163,12 +166,14 @@
     mode: u=rwX,g=rwXs,o=rx
 
 - name: PostgreSQL | Enable service
+  become: true
   service:
     name: "{{ postgresql_service_name }}"
     enabled: yes
   when: postgresql_service_enabled
 
 - name: PostgreSQL | Restart PostgreSQL
+  become: true
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
