@@ -152,6 +152,14 @@
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
 
+- name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
+  become: true
+  template:
+    src: usr_lib_tmpfiles.d_postgresql.conf.j2
+    dest: "/usr/lib/tmpfiles.d/postgresql.conf"
+    mode: 0644
+  register: postgresql_tmpfilesd_conf
+
 - name: PostgreSQL | Enable service
   service:
     name: "{{ postgresql_service_name }}"
